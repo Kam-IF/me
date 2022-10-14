@@ -1,0 +1,138 @@
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>TypeCat</title>
+  <link rel="stylesheet" href="css/style.css"
+</head>
+<body>
+
+  <h1>TypeCat</h1>
+  <h2>Timer:<span id="timeLeft">-----</span>秒</h2>
+  <hr>
+    <h1>
+        <p id="typingWord">
+        Click here
+  </p>
+    </h1>
+  <hr>
+  <h2>
+  <p id="info">
+  NumberOfInputCharacters:<span id="wordCount">0</span>
+  TypeMiss:<span id="typeMiss">0</span>
+  CorrectAnswerRate:<span id="accuracy">0</span>
+  WPM:<span id="typeSpeed">0</span>
+  </p>
+  </h2>
+  <!-- <script src="js/main.js"></script> -->
+  <script>
+  const words = [
+    'hello',
+    'nice to meet you',
+    'ikura',
+    'egg',
+    'salmon',
+    'delicious',
+    'cat',
+    'rabbit',
+    'cute',
+    'scoop',
+    'house',
+    'morning',
+    'noon',
+    'evening',
+  ];
+  let word;
+  let loc;
+  let wordCount;
+  let typeMiss;
+  let accuracy;
+  let typeSpeed;
+  const timeLimit = 30 * 1000;
+  let startTime;
+  let startFlg = false;
+
+  const typingWord = document.getElementById('typingWord');
+  const wordCountLabel = document.getElementById('wordCount');
+  const typeMissLabel = document.getElementById('typeMiss');
+  const timeLeftLabel = document.getElementById('timeLeft');
+  const accuracyLabel = document.getElementById('accuracy');
+  const typeSpeedLabel = document.getElementById('typeSpeed');
+
+  function updateTypingWord() {
+    let update = '';
+    for (let i = 0; i < loc; i++){
+      update += '-';
+    }
+    typingWord.textContent = update + word.substring(loc);
+  }
+
+  function updateTimeLimit() {
+    const timer = startTime + timeLimit - Date.now();
+    timeLeftLabel.textContent = (timer / 1000).toFixed(2);
+
+    const timeoutId = setTimeout(() => {
+      updateTimeLimit();
+    }, 10);
+
+    if (timer < 0) {
+      startFlg = false;
+      clearTimeout(timeoutId);
+      timeLeftLabel.textContent = '0.00';
+      setTimeout(() => {
+        accuracy = wordCount + typeMiss === 0 ? 0 : wordCount / ( wordCount + typeMiss ) * 100;
+        typeSpeed = wordCount / ( timeLimit / 60000 );
+        accuracyLabel.textContent = accuracy.toFixed(2);
+        typeSpeedLabel.textContent = typeSpeed;
+        alert('Game Over！');
+        alert('I finished' + wordCount +  'characters in 30 seconds!');
+      }, 100);
+
+      typingWord.textContent = 'Game Over！' + 'I finished' + wordCount +  'characters in 30 seconds!';
+    }
+  }
+
+  window.addEventListener('click', () => {
+    if (startFlg === true) {
+      return;
+    }
+
+    startFlg = true;
+    loc = 0;
+    wordCount = 0;
+    typeMiss = 0;
+    accuracy = 0;
+    typeSpeed = 0;
+
+    wordCountLabel.textContent = wordCount;
+    typeMissLabel.textContent = typeMiss;
+    accuracyLabel.textContent = accuracy;
+    typeSpeedLabel.textContent = typeSpeed;
+    word = words[Math.floor(Math.random() * words.length)];
+
+    typingWord.textContent = word;
+    startTime = Date.now();
+    updateTimeLimit();
+  });
+
+  window.addEventListener('keydown', e => {
+    if (startFlg === false) {
+      return;
+    }
+    if (e.key === word[loc]){
+      loc++;
+      if (loc === word.length) {
+        word = words[Math.floor(Math.random() * words.length)];
+        loc = 0;
+      }
+      updateTypingWord();
+      wordCount++;
+      wordCountLabel.textContent = wordCount;
+    } else if (e.key === 'Shift') {
+      ;
+    } else {
+      typeMiss++;
+      typeMissLabel.textContent = typeMiss;
+    }
+  });</script>
+</body>
+</html>

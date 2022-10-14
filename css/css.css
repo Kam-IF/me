@@ -1,0 +1,15 @@
+.Btn {
+  border-radius: 5px;
+  background-color: lightblue;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.Btn2 {
+  border-radius: 5px;
+  background-color: yellow;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+}
